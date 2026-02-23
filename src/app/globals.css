@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+@theme {
+  --color-cream:    #ffffff;
+  --color-surface:  #f1f0ed;
+  --color-sage:     #8fa68e;
+  --color-clay:     #c4785a;
+  --color-charcoal: #2d2d2d;
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Required by react-masonry-css */
+.masonry-grid { display: flex; margin-left: -12px; width: auto; }
+.masonry-grid-column { padding-left: 12px; background-clip: padding-box; }
+.masonry-grid-column > div { margin-bottom: 12px; }
