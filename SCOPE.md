@@ -1,4 +1,4 @@
-# L&H Crochet — Product Scope
+# Stitchmark — Product Scope
 
 ## Vision
 

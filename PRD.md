@@ -1,10 +1,10 @@
-# Product Requirements Document — LH Crochet
+# Product Requirements Document — Stitchmark
 
 ---
 
 ## 1. Context
 
-**Product Name:** LH Crochet
+**Product Name:** Stitchmark
 
 **Product Type:** Personal portfolio website + visual project gallery (with a roadmap toward e-commerce).
 

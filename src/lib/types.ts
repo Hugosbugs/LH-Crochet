@@ -17,3 +17,6 @@ export interface ActionResult {
   error?: string
   projectId?: string
 }
+
+// Multi-category filter state. Key = FilterCategory.key, value = Set of active namespaced tag values.
+export type FilterState = Record<string, Set<string>>

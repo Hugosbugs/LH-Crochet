@@ -8,10 +8,19 @@ import ImageUploadField from './ImageUploadField'
 import PatternUploadField from './PatternUploadField'
 import { createProject, updateProject } from '@/app/admin/actions'
 import { getImageUrl } from '@/lib/utils'
+import { MVP_CATEGORIES } from '@/lib/filters'
 import type { Project } from '@/lib/types'
 
 type ProjectFormProps = {
   initialProject?: Project
+}
+
+function buildInitialTagState(tags: string[]): Record<string, string[]> {
+  const result: Record<string, string[]> = {}
+  for (const cat of MVP_CATEGORIES) {
+    result[cat.key] = tags.filter(t => t.startsWith(`${cat.key}:`))
+  }
+  return result
 }
 
 export default function ProjectForm({ initialProject }: ProjectFormProps) {
@@ -22,6 +31,21 @@ export default function ProjectForm({ initialProject }: ProjectFormProps) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
+  const [selectedTags, setSelectedTags] = useState<Record<string, string[]>>(
+    () => buildInitialTagState(initialProject?.tags ?? [])
+  )
+
+  function toggleTag(categoryKey: string, value: string) {
+    setSelectedTags(prev => {
+      const current = prev[categoryKey] ?? []
+      return {
+        ...prev,
+        [categoryKey]: current.includes(value)
+          ? current.filter(v => v !== value)
+          : [...current, value],
+      }
+    })
+  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -31,6 +55,10 @@ export default function ProjectForm({ initialProject }: ProjectFormProps) {
     const formData = new FormData(form)
     if (imageFile) formData.set('image', imageFile)
     if (patternFile) formData.set('pattern', patternFile)
+
+    // Merge per-category tag selections into a comma-joined string for actions.ts
+    const allTags = Object.values(selectedTags).flat()
+    formData.set('tags', allTags.join(','))
 
     setLoading(true)
 
@@ -51,6 +79,7 @@ export default function ProjectForm({ initialProject }: ProjectFormProps) {
         form.reset()
         setImageFile(null)
         setPatternFile(null)
+        setSelectedTags(buildInitialTagState([]))
         router.refresh()
       } else {
         setError(result.error ?? 'Something went wrong.')
@@ -103,19 +132,36 @@ export default function ProjectForm({ initialProject }: ProjectFormProps) {
         />
       </div>
 
-      {/* Tags */}
-      <div className="space-y-1">
-        <label htmlFor="tags" className="block text-sm font-medium text-charcoal">
-          Tags <span className="text-charcoal/40 font-normal">(comma-separated)</span>
-        </label>
-        <input
-          id="tags"
-          name="tags"
-          type="text"
-          defaultValue={initialProject?.tags.join(', ')}
-          className="w-full rounded-xl border border-sage/30 bg-white px-4 py-2.5 text-sm text-charcoal placeholder:text-charcoal/40 focus:border-sage focus:outline-none"
-          placeholder="e.g. cardigan, granny square, wearable"
-        />
+      {/* Tags — per-category chip selectors */}
+      <div className="space-y-4">
+        <p className="text-sm font-medium text-charcoal">Tags</p>
+        {MVP_CATEGORIES.map(cat => (
+          <div key={cat.key} className="space-y-2">
+            <p className="text-xs font-medium text-charcoal/50 uppercase tracking-wide">
+              {cat.label}
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {cat.options.map(opt => {
+                const active = (selectedTags[cat.key] ?? []).includes(opt.value)
+                return (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => toggleTag(cat.key, opt.value)}
+                    aria-pressed={active}
+                    className={`rounded-full px-3 py-1 text-xs font-medium transition-colors cursor-pointer
+                      ${active
+                        ? 'bg-charcoal text-white'
+                        : 'border border-sage/30 text-charcoal hover:border-sage'
+                      }`}
+                  >
+                    {opt.label}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        ))}
       </div>
 
       {/* Image */}

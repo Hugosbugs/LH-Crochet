@@ -5,18 +5,18 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'L&H Crochet',
+  title: 'Stitchmark',
   description: 'A handmade crochet project gallery.',
+  icons: {
+    icon: '/logos/png/StitchMark_Logo--Icon-1.png',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body className={`${inter.className} bg-surface text-charcoal antialiased`}>
-        <header className="px-8 py-4 bg-white shadow-sm">
-          <p className="text-xl font-bold tracking-wide text-charcoal">L&amp;H Crochet</p>
-        </header>
-        <main>{children}</main>
+        {children}
       </body>
     </html>
   )

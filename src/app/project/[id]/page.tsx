@@ -24,10 +24,10 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
   return (
     <div className="max-w-2xl mx-auto px-6 py-10 space-y-6">
       <Link
-        href="/"
+        href="/explore"
         className="inline-flex items-center gap-1 text-sm text-charcoal/50 hover:text-charcoal transition-colors"
       >
-        ← Back to home
+        ← Back to gallery
       </Link>
 
       <div className="overflow-hidden rounded-2xl">

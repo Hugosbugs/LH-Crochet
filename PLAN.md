@@ -1,4 +1,4 @@
-# LH Crochet — MVP Build Plan
+# Stitchmark — MVP Build Plan
 
 ## Context
 
