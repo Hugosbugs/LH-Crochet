@@ -4,6 +4,7 @@ import { createClient } from '@supabase/supabase-js'
 import { revalidatePath } from 'next/cache'
 import { parseTags } from '@/lib/utils'
 import type { ActionResult } from '@/lib/types'
+import { createClient as createSessionClient } from '@/lib/supabase/server'
 
 function getServiceClient() {
   return createClient(
@@ -12,7 +13,17 @@ function getServiceClient() {
   )
 }
 
+async function requireAuth(): Promise<ActionResult | null> {
+  const supabase = await createSessionClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { success: false, error: 'Unauthorized' }
+  return null
+}
+
 export async function createProject(formData: FormData): Promise<ActionResult> {
+  const authError = await requireAuth()
+  if (authError) return authError
+
   try {
     const name = (formData.get('name') as string | null)?.trim()
     const description = (formData.get('description') as string | null)?.trim() || null
@@ -67,6 +78,9 @@ export async function createProject(formData: FormData): Promise<ActionResult> {
 }
 
 export async function updateProject(id: string, formData: FormData): Promise<ActionResult> {
+  const authError = await requireAuth()
+  if (authError) return authError
+
   try {
     const name = (formData.get('name') as string | null)?.trim()
     const description = (formData.get('description') as string | null)?.trim() || null
@@ -127,6 +141,9 @@ export async function updateProject(id: string, formData: FormData): Promise<Act
 }
 
 export async function deleteProject(id: string): Promise<ActionResult> {
+  const authError = await requireAuth()
+  if (authError) return authError
+
   try {
     const supabase = getServiceClient()
 

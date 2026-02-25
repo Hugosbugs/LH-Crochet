@@ -1,39 +1,52 @@
 import Link from 'next/link'
 import Image from 'next/image'
+import { LogOut } from 'lucide-react'
+import { createClient } from '@/lib/supabase/server'
+import { signOut } from '@/app/login/actions'
 
-export default function SidebarNav() {
+export default async function SidebarNav() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
   return (
-    <aside className="w-16 min-h-screen bg-white border-r border-gray-100 flex flex-col items-center pt-4 gap-6 shrink-0">
-      <Link
-        href="/"
-        className="w-10 h-10 flex items-center justify-center hover:opacity-80 transition-opacity"
-        aria-label="Home"
-        title="Stitchmark — Home"
-      >
-        <Image
-          src="/logos/png/StitchMark_Logo--Icon-1.png"
-          alt="Stitchmark"
-          width={34}
-          height={34}
-          priority
-        />
-      </Link>
-      <Link
-        href="/"
-        className="w-10 h-10 flex items-center justify-center rounded-full text-charcoal/50 hover:bg-surface hover:text-charcoal transition-colors"
-        aria-label="Home"
-        title="Home"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          className="w-5 h-5"
+    <aside className="w-16 min-h-screen bg-white border-r border-gray-200 flex flex-col items-center pt-4 gap-2 shrink-0">
+      {/* Logo */}
+      <div className="relative group flex items-center mb-4">
+        <Link
+          href="/"
+          className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors"
+          aria-label="Stitchmark"
         >
-          <path d="M11.47 3.84a.75.75 0 011.06 0l8.69 8.69a.75.75 0 101.06-1.06l-8.689-8.69a2.25 2.25 0 00-3.182 0l-8.69 8.69a.75.75 0 001.061 1.06l8.69-8.69z" />
-          <path d="M12 5.432l8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 01-.75-.75v-4.5a.75.75 0 00-.75-.75h-3a.75.75 0 00-.75.75V21a.75.75 0 01-.75.75H5.625a1.875 1.875 0 01-1.875-1.875v-6.198a2.29 2.29 0 00.091-.086L12 5.432z" />
-        </svg>
-      </Link>
+          <Image
+            src="/logos/png/StitchMark_Logo--Icon-1.png"
+            alt="Stitchmark"
+            width={34}
+            height={34}
+            priority
+          />
+        </Link>
+        <div className="pointer-events-none absolute left-full ml-2.5 px-2 py-1 rounded bg-black text-white text-xs font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-50">
+          Stitchmark
+        </div>
+      </div>
+
+      {/* Sign out — admin only */}
+      {user && (
+        <div className="mt-auto mb-4 relative group flex items-center">
+          <form action={signOut}>
+            <button
+              type="submit"
+              aria-label="Sign out"
+              className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
+            >
+              <LogOut className="w-4 h-4 text-charcoal" strokeWidth={2.5} />
+            </button>
+          </form>
+          <div className="pointer-events-none absolute left-full ml-2.5 px-2 py-1 rounded bg-black text-white text-xs font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-50">
+            Sign out
+          </div>
+        </div>
+      )}
     </aside>
   )
 }

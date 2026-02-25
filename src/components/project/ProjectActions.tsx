@@ -10,9 +10,11 @@ import { deleteProject } from '@/app/admin/actions'
 type ProjectActionsProps = {
   projectId: string
   projectName: string
+  isAdmin: boolean
 }
 
-export default function ProjectActions({ projectId, projectName }: ProjectActionsProps) {
+export default function ProjectActions({ projectId, projectName, isAdmin }: ProjectActionsProps) {
+  if (!isAdmin) return null
   const router = useRouter()
   const [confirming, setConfirming] = useState(false)
   const [deleting, setDeleting] = useState(false)
