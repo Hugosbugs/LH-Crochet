@@ -14,7 +14,7 @@ export async function signIn(formData: FormData) {
     redirect('/login?error=1')
   }
 
-  redirect('/explore')
+  redirect('/admin')
 }
 
 export async function signOut() {

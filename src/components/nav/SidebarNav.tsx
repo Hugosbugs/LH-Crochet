@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { LogOut } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { signOut } from '@/app/login/actions'
+import SidebarNavLinks from './SidebarNavLinks'
 
 export default async function SidebarNav() {
   const supabase = await createClient()
@@ -29,6 +30,9 @@ export default async function SidebarNav() {
           Stitchmark
         </div>
       </div>
+
+      {/* Nav tabs — gallery + dashboard (admin only) */}
+      <SidebarNavLinks isAdmin={!!user} />
 
       {/* Sign out — admin only */}
       {user && (

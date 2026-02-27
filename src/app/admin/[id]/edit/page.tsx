@@ -15,7 +15,7 @@ export default async function EditProjectPage({ params }: { params: Promise<{ id
   if (!project) notFound()
 
   return (
-    <div className="max-w-2xl mx-auto px-6 py-10">
+    <div className="px-6 py-10">
       <h1 className="text-2xl font-semibold text-charcoal mb-8">Edit Project</h1>
       <ProjectForm initialProject={project} />
     </div>
